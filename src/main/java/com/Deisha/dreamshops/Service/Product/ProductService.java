@@ -11,7 +11,15 @@ public interface ProductService{
     void deleteProduct(long productId);
 
     List<Product> getAllProduct();
-    List<Product> getProductsByCategoryId(long categoryId);
-    List<Product> getProductByBrandId(Long productBrandId);
+    List<Product> getProductByName(String name);
+    List<Product> getProductByBrand(String productBrand);
+    List<Product> getProductByNameAndBrand(String productName, String productBrand);
+    List<Product> getProductsByCategory(String productCategory);
     List<Product> getProductByBrandAndCategory(String productBrand, String productCategory);
+    List<Product> getProductByNameAndCategory(String productName, String ProductCategory);
+
+    long countProductsByNameAndBrand(String productName, String productBrand);
+
+
+
 }
