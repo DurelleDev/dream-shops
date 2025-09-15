@@ -2,6 +2,7 @@ package com.Deisha.dreamshops.Service.Product;
 
 import com.Deisha.dreamshops.dto.ProductDto;
 import com.Deisha.dreamshops.dto.ProductResponse;
+import com.Deisha.dreamshops.dto.ProductUpdateDto;
 import com.Deisha.dreamshops.model.Product;
 
 import java.util.List;
@@ -9,10 +10,11 @@ import java.util.List;
 public interface ProductService{
     Product addProduct(ProductDto product);
     ProductDto searchProduct(long productId);
-    ProductDto updateProduct(long productId, ProductDto product);
+    ProductUpdateDto updateProduct(long productId, ProductUpdateDto existingProduct);
+
     void deleteProduct(long productId);
 
-    List<ProductResponse> getAllProduct();
+    ProductResponse getAllProducts();
     List<ProductDto> getProductByName(String name);
     List<ProductDto> getProductByBrand(String productBrand);
     List<ProductDto> getProductByNameAndBrand(String productName, String productBrand);

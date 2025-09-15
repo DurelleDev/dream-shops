@@ -4,23 +4,30 @@ import com.Deisha.dreamshops.Exceptions.ProductNotFoundException;
 import com.Deisha.dreamshops.Service.Product.ProductService;
 import com.Deisha.dreamshops.dto.ProductDto;
 import com.Deisha.dreamshops.dto.ProductResponse;
+import com.Deisha.dreamshops.dto.ProductUpdateDto;
 import com.Deisha.dreamshops.model.Category;
 import com.Deisha.dreamshops.model.Product;
 import com.Deisha.dreamshops.repository.CategoryRepository;
 import com.Deisha.dreamshops.repository.ProductRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-//@Service
-@RequiredArgsConstructor
+@Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
 
+    @Autowired
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository){
+        this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
+    }
+
     @Override
-    public Product addProduct(ProductDto productDto) {
+    public Product addProduct(ProductDto productDto) { 
         //check if the category is found in the DB
         //yes: set as new product category
         //No: save it as new category and then set it to the product
@@ -32,11 +39,7 @@ public class ProductServiceImpl implements ProductService {
                 });
 
         productDto.setCategory(category);
-
-
-
-
-        return null;
+        return productRepository.save(mapToEntity(productDto, category));
     }
 
 
@@ -47,8 +50,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto updateProduct(long productId, ProductDto product) {
-        return null;
+    public ProductUpdateDto updateProduct(long productId, ProductUpdateDto existingProduct) {
+        ProductUpdateDto productUpdateDto = new ProductUpdateDto();
+
+        Product product = productRepository.findById(productId).orElseThrow(
+                ()-> new ProductNotFoundException("User not found with ID: " + productId)
+        );
+
+        productUpdateDto.setProductName(existingProduct.getProductName());
+        productUpdateDto.setProductBrand(existingProduct.getProductBrand());
+        productUpdateDto.setProductPrice(existingProduct.getProductPrice());
+        productUpdateDto.setProductQuantity(existingProduct.getProductQuantity());
+        productUpdateDto.setProductDescription(existingProduct.getProductDescription());
+        productUpdateDto.setCategory(existingProduct.getCategory());
+
+        return productUpdateDto;
     }
 
     @Override
@@ -60,10 +76,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponse> getAllProduct() {
+    public ProductResponse getAllProducts() {
         ProductResponse productResponse = new ProductResponse();
 
-        return List.of();
+        List<Product> productContent = productRepository.findAll();
+        List<ProductDto> content = productContent.stream().map(this::mapToDto).toList();
+
+        productResponse.setContent(content);
+
+        return productResponse;
     }
 
     @Override
@@ -105,22 +126,27 @@ public class ProductServiceImpl implements ProductService {
         ProductDto productDto = new ProductDto();
 
         productDto.setProductId(product.getProductId());
+        productDto.setProductName(product.getProductName());
         productDto.setProductBrand(product.getProductBrand());
         productDto.setProductPrice(product.getProductPrice());
         productDto.setProductQuantity(product.getProductQuantity());
         productDto.setProductDescription(product.getProductDescription());
+        productDto.setCategory(product.getCategory());
 
         return productDto;
     }
     private Product mapToEntity(ProductDto productDto, Category category){
-        return new Product(
-        productDto.getProductName(),
-        productDto.getProductBrand(),
-        productDto.getProductPrice(),
-        productDto.getProductQuantity(),
-        productDto.getProductDescription(),
-        category
-);
+        Product product = new Product();
+
+        product.setProductId(productDto.getProductId());
+        product.setProductName(productDto.getProductName());
+        product.setProductBrand(productDto.getProductBrand());
+        product.setProductPrice(productDto.getProductPrice());
+        product.setProductQuantity(productDto.getProductQuantity());
+        product.setProductDescription(productDto.getProductDescription());
+        product.setCategory(category);
+
+        return product;
     }
 
 
