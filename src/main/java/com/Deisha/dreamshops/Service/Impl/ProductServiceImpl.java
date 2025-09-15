@@ -27,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product addProduct(ProductDto productDto) { 
+    public Product addProduct(ProductDto productDto) {
         //check if the category is found in the DB
         //yes: set as new product category
         //No: save it as new category and then set it to the product
@@ -39,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
                 });
 
         productDto.setCategory(category);
-        return productRepository.save(mapToEntity(productDto, category));
+        return productRepository.save(mapToEntity(productDto,category));
     }
 
 
@@ -50,21 +50,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductUpdateDto updateProduct(long productId, ProductUpdateDto existingProduct) {
-        ProductUpdateDto productUpdateDto = new ProductUpdateDto();
+    public ProductUpdateDto updateProduct(long productId, ProductUpdateDto updatedProduct) {
 
         Product product = productRepository.findById(productId).orElseThrow(
                 ()-> new ProductNotFoundException("User not found with ID: " + productId)
         );
 
-        productUpdateDto.setProductName(existingProduct.getProductName());
-        productUpdateDto.setProductBrand(existingProduct.getProductBrand());
-        productUpdateDto.setProductPrice(existingProduct.getProductPrice());
-        productUpdateDto.setProductQuantity(existingProduct.getProductQuantity());
-        productUpdateDto.setProductDescription(existingProduct.getProductDescription());
-        productUpdateDto.setCategory(existingProduct.getCategory());
+        product.setProductName(updatedProduct.getProductName());
+        product.setProductBrand(updatedProduct.getProductBrand());
+        product.setProductPrice(updatedProduct.getProductPrice());
+        product.setProductQuantity(updatedProduct.getProductQuantity());
+        product.setProductDescription(updatedProduct.getProductDescription());
 
-        return productUpdateDto;
+        Category category = categoryRepository.findByCategoryName(updatedProduct.getCategory().getCategoryName());
+        product.setCategory(updatedProduct.getCategory());
+
+        return updatedProduct;
     }
 
     @Override

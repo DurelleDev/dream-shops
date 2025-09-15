@@ -10,11 +10,12 @@ import java.util.List;
 public interface ProductService{
     Product addProduct(ProductDto product);
     ProductDto searchProduct(long productId);
-    ProductUpdateDto updateProduct(long productId, ProductUpdateDto existingProduct);
+    ProductDto updateProduct(long productId, ProductDto existingProduct);
 
     void deleteProduct(long productId);
 
     ProductResponse getAllProducts();
+
     List<ProductDto> getProductByName(String name);
     List<ProductDto> getProductByBrand(String productBrand);
     List<ProductDto> getProductByNameAndBrand(String productName, String productBrand);

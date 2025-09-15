@@ -1,5 +1,6 @@
 package com.Deisha.dreamshops.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +17,7 @@ public class Category {
     private long categoryId;
     private String categoryName;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "category")
     private List<Product> products;
 

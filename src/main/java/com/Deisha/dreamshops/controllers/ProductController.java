@@ -1,13 +1,13 @@
 package com.Deisha.dreamshops.controllers;
 
 import com.Deisha.dreamshops.Service.Product.ProductService;
+import com.Deisha.dreamshops.dto.ProductDto;
 import com.Deisha.dreamshops.dto.ProductResponse;
+import com.Deisha.dreamshops.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,8 +24,17 @@ public class ProductController {
     @GetMapping("products")
     public ResponseEntity<ProductResponse> getAllProducts(){
         ProductResponse productResponse = new ProductResponse();
-
         return new ResponseEntity<>(productService.getAllProducts(), HttpStatus.OK);
+    }
+
+    @PostMapping("products/create")
+    public ResponseEntity<Product> createProduct(@RequestBody ProductDto productDto){
+        return new ResponseEntity<>(productService.addProduct(productDto), HttpStatus.CREATED);
+    }
+
+    @PutMapping("products/{id}/update")
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable("id") long productId, @RequestBody ProductDto productDto){
+        return new ResponseEntity<>(productService.updateProduct(productId, productDto), HttpStatus.ACCEPTED);
     }
 
 
