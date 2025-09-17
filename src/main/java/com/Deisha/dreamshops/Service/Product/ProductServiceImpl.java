@@ -1,10 +1,8 @@
-package com.Deisha.dreamshops.Service.Impl;
+package com.Deisha.dreamshops.Service.Product;
 
 import com.Deisha.dreamshops.Exceptions.ProductNotFoundException;
-import com.Deisha.dreamshops.Service.Product.ProductService;
 import com.Deisha.dreamshops.dto.ProductDto;
 import com.Deisha.dreamshops.dto.ProductResponse;
-import com.Deisha.dreamshops.dto.ProductUpdateDto;
 import com.Deisha.dreamshops.model.Category;
 import com.Deisha.dreamshops.model.Product;
 import com.Deisha.dreamshops.repository.CategoryRepository;
@@ -50,22 +48,26 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductUpdateDto updateProduct(long productId, ProductUpdateDto updatedProduct) {
+    public Product updateProduct(long productId, ProductDto updatedProduct) {
 
-        Product product = productRepository.findById(productId).orElseThrow(
-                ()-> new ProductNotFoundException("User not found with ID: " + productId)
-        );
+        return productRepository.findById(productId)
+                .map(existingProduct-> updateExistingProduct(existingProduct, updatedProduct))
+                .map(productRepository::save)
+                .orElseThrow(()-> new ProductNotFoundException("Product not found. Cannot be updated"));
+    }
 
-        product.setProductName(updatedProduct.getProductName());
-        product.setProductBrand(updatedProduct.getProductBrand());
-        product.setProductPrice(updatedProduct.getProductPrice());
-        product.setProductQuantity(updatedProduct.getProductQuantity());
-        product.setProductDescription(updatedProduct.getProductDescription());
+    private Product updateExistingProduct(Product existingProduct, ProductDto updatedProduct){
+
+        existingProduct.setProductName(updatedProduct.getProductName());
+        existingProduct.setProductBrand(updatedProduct.getProductBrand());
+        existingProduct.setProductPrice(updatedProduct.getProductPrice());
+        existingProduct.setProductQuantity(updatedProduct.getProductQuantity());
+        existingProduct.setProductDescription(updatedProduct.getProductDescription());
 
         Category category = categoryRepository.findByCategoryName(updatedProduct.getCategory().getCategoryName());
-        product.setCategory(updatedProduct.getCategory());
+        existingProduct.setCategory(updatedProduct.getCategory());
 
-        return updatedProduct;
+        return existingProduct;
     }
 
     @Override

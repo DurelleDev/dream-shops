@@ -1,9 +1,12 @@
 package com.Deisha.dreamshops.controllers;
 
+import com.Deisha.dreamshops.Service.Category.CategoryService;
 import com.Deisha.dreamshops.Service.Product.ProductService;
+import com.Deisha.dreamshops.dto.CategoryDto;
 import com.Deisha.dreamshops.dto.ProductDto;
 import com.Deisha.dreamshops.dto.ProductResponse;
 import com.Deisha.dreamshops.model.Product;
+import com.Deisha.dreamshops.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +18,12 @@ import java.util.List;
 @RequestMapping("/api/")
 public class ProductController {
     private ProductService productService;
+    private CategoryService categoryService;
 
     @Autowired
-    public ProductController(ProductService productService){
+    public ProductController(ProductService productService, CategoryService categoryService){
         this.productService = productService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("products")
@@ -33,11 +38,9 @@ public class ProductController {
     }
 
     @PutMapping("products/{id}/update")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable("id") long productId, @RequestBody ProductDto productDto){
+    public ResponseEntity<Product> updateProduct(@PathVariable("id") long productId, @RequestBody ProductDto productDto){
         return new ResponseEntity<>(productService.updateProduct(productId, productDto), HttpStatus.ACCEPTED);
     }
-
-
 
 
 
